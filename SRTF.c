@@ -14,39 +14,35 @@ int main() {
     fp = fopen("gantt_data.txt","w");
 
     int n;
-
-    do {
-        printf("Enter number of processes (1-100): ");
-        scanf("%d", &n);
-        if(n <= 0 || n > MAX)
-            printf("Invalid! Enter between 1 and 100.\n");
-    } while(n <= 0 || n > MAX);
-
     int pid[MAX];
     float at[MAX], bt[MAX], rt[MAX], ct[MAX], tat[MAX], wt[MAX];
 
+    FILE *fp2;
+
+    fp2 = fopen("process_data.txt","r");
+
+    if(fp2 == NULL){
+        printf("Process data file not found! Run input first.\n");
+        return 1;
+    }
+
+    fscanf(fp2,"%d",&n);
+
     for(int i = 0; i < n; i++) {
+
+        int pr;  // priority read but not used
 
         pid[i] = i + 1;
 
-        printf("\nProcess %d\n", pid[i]);
-
-        do {
-            printf("Arrival Time (>=0): ");
-            scanf("%f", &at[i]);
-            if(at[i] < 0)
-                printf("Arrival time cannot be negative.\n");
-        } while(at[i] < 0);
-
-        do {
-            printf("Burst Time (>0): ");
-            scanf("%f", &bt[i]);
-            if(bt[i] <= 0)
-                printf("Burst time must be greater than 0.\n");
-        } while(bt[i] <= 0);
+        fscanf(fp2,"%f %f %d",&at[i],&bt[i],&pr);
 
         rt[i] = bt[i];
     }
+
+    int tq; // time quantum read but not used
+    fscanf(fp2,"%d",&tq);
+
+    fclose(fp2);
 
     float time = 0;
     int completed = 0;
@@ -60,7 +56,6 @@ int main() {
         int current = -1;
         float minRT = FLT_MAX;
 
-        // Select shortest remaining time process
         for(int i = 0; i < n; i++) {
 
             if(at[i] <= time + EPS && rt[i] > EPS) {
@@ -76,7 +71,6 @@ int main() {
             }
         }
 
-        // If no process available → Idle
         if(current == -1) {
 
             float nextArrival = FLT_MAX;
@@ -96,7 +90,6 @@ int main() {
         if(lastProcess != -1 && lastProcess != current)
             contextSwitch++;
 
-        // Find next arrival
         float nextArrival = FLT_MAX;
 
         for(int i = 0; i < n; i++)
@@ -150,15 +143,14 @@ int main() {
     printf("Average Turnaround Time: %.2f\n", totalTAT/n);
     printf("Total Context Switches: %d\n", contextSwitch);
 
-    // save average waiting time for comparison
     FILE *cmp;
     cmp = fopen("comparison_data.txt","a");
     fprintf(cmp,"SRTF %.2f\n", totalWT/n);
-            fclose(cmp);
-
+    fclose(cmp);
 
     fclose(fp);
 
     system("python visualize.py || python3 visualize.py");
+
     return 0;
 }

@@ -9,43 +9,33 @@ int main() {
     fp = fopen("gantt_data.txt","w");
 
     int n;
-
-    do {
-        printf("Enter number of processes (1-100): ");
-        scanf("%d", &n);
-
-        if(n <= 0 || n > MAX)
-            printf("Invalid! Enter value between 1 and 100.\n");
-
-    } while(n <= 0 || n > MAX);
-
     int pid[MAX];
     float at[MAX], bt[MAX], ct[MAX], tat[MAX], wt[MAX];
 
+    FILE *fp2;
+
+    fp2 = fopen("process_data.txt","r");
+
+    if(fp2 == NULL){
+        printf("Process data file not found! Run input first.\n");
+        return 1;
+    }
+
+    fscanf(fp2,"%d",&n);
+
     for(int i = 0; i < n; i++) {
+
+        int pr;  // priority read (not used in FCFS)
 
         pid[i] = i + 1;
 
-        printf("\nProcess %d\n", pid[i]);
-
-        do {
-            printf("Arrival Time (>=0): ");
-            scanf("%f", &at[i]);
-
-            if(at[i] < 0)
-                printf("Arrival time cannot be negative!\n");
-
-        } while(at[i] < 0);
-
-        do {
-            printf("Burst Time (>0): ");
-            scanf("%f", &bt[i]);
-
-            if(bt[i] <= 0)
-                printf("Burst time must be greater than 0!\n");
-
-        } while(bt[i] <= 0);
+        fscanf(fp2,"%f %f %d",&at[i],&bt[i],&pr);
     }
+
+    int tq;   // time quantum read (not used in FCFS)
+    fscanf(fp2,"%d",&tq);
+
+    fclose(fp2);
 
     // Sort by Arrival Time
     for(int i = 0; i < n - 1; i++) {
@@ -69,8 +59,7 @@ int main() {
     printf("\n===== FCFS Execution Log =====\n");
 
     for(int i = 0; i < n; i++) {
-        // If CPU is idle before the next process arrives
-        
+
         if(currentTime < at[i]) {
 
             printf("CPU Idle from %.2f to %.2f\n", currentTime, at[i]);

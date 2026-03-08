@@ -14,56 +14,38 @@ int main() {
     fp = fopen("gantt_data.txt","w");
 
     int n;
-
-    do {
-        printf("Enter number of processes (1-100): ");
-        scanf("%d", &n);
-        if(n <= 0 || n > MAX)
-            printf("Invalid! Enter between 1 and 100.\n");
-    } while(n <= 0 || n > MAX);
-
     float at[MAX], bt[MAX], rt[MAX], ct[MAX], tat[MAX], wt[MAX];
     int pid[MAX];
     bool inQueue[MAX] = {false};
 
+    FILE *fp2;
+
+    fp2 = fopen("process_data.txt","r");
+
+    if(fp2 == NULL){
+        printf("Process data file not found! Run input first.\n");
+        return 1;
+    }
+
+    fscanf(fp2,"%d",&n);
+
     for(int i = 0; i < n; i++) {
+
+        int pr;   // priority read but not used in RR
 
         pid[i] = i + 1;
 
-        printf("\nProcess %d\n", pid[i]);
-
-        do {
-            printf("Arrival Time (>=0): ");
-            scanf("%f", &at[i]);
-            if(at[i] < 0)
-                printf("Arrival time cannot be negative.\n");
-        } while(at[i] < 0);
-
-        do {
-            printf("Burst Time (>0): ");
-            scanf("%f", &bt[i]);
-            if(bt[i] <= 0)
-                printf("Burst time must be greater than 0.\n");
-        } while(bt[i] <= 0);
+        fscanf(fp2,"%f %f %d",&at[i],&bt[i],&pr);
 
         rt[i] = bt[i];
     }
 
     float tq;
-    do {
-        printf("\nEnter Time Quantum (>0): ");
-        scanf("%f", &tq);
-        if(tq <= 0)
-            printf("Time Quantum must be > 0.\n");
-    } while(tq <= 0);
+    fscanf(fp2,"%f",&tq);
 
-    float csOverhead;
-    do {
-        printf("Enter Context Switch Overhead Time (>=0): ");
-        scanf("%f", &csOverhead);
-        if(csOverhead < 0)
-            printf("Overhead cannot be negative.\n");
-    } while(csOverhead < 0);
+    fclose(fp2);
+
+    float csOverhead = 0;  // keeping overhead 0 for comparison mode
 
     int queue[MAX];
     int front = 0, rear = 0;
@@ -102,20 +84,8 @@ int main() {
 
         int current = queue[front++];
 
-        if(lastProcess != -1 && lastProcess != current) {
-
+        if(lastProcess != -1 && lastProcess != current)
             contextSwitch++;
-
-            if(csOverhead > 0) {
-
-                printf("Context Switch (%.2f -> %.2f)\n",
-                       time, time + csOverhead);
-
-                fprintf(fp,"CS %.2f %.2f\n", time, csOverhead);
-
-                time += csOverhead;
-            }
-        }
 
         float executeTime = fmin(tq, rt[current]);
 
@@ -166,16 +136,13 @@ int main() {
     printf("Average Turnaround Time: %.2f\n", totalTAT/n);
     printf("Total Context Switches: %d\n", contextSwitch);
 
-    // save average waiting time for comparison
     FILE *cmp;
     cmp = fopen("comparison_data.txt","a");
     fprintf(cmp,"RR %.2f\n", totalWT/n);
     fclose(cmp);
 
-
-
-
     fclose(fp);
+
     system("python visualize.py || python3 visualize.py");
 
     return 0;

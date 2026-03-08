@@ -10,48 +10,34 @@ int main() {
     fp = fopen("gantt_data.txt","w");
 
     int n;
-
-    // Validate number of processes
-    do {
-        printf("Enter number of processes (1-100): ");
-        scanf("%d", &n);
-
-        if(n <= 0 || n > MAX)
-            printf("Invalid! Enter value between 1 and 100.\n");
-
-    } while(n <= 0 || n > MAX);
-
     int pid[MAX], isCompleted[MAX];
     float at[MAX], bt[MAX], ct[MAX], tat[MAX], wt[MAX];
 
-    // Input section
+    FILE *fp2;
+
+    fp2 = fopen("process_data.txt","r");
+
+    if(fp2 == NULL){
+        printf("Process data file not found! Run input first.\n");
+        return 1;
+    }
+
+    fscanf(fp2,"%d",&n);
+
     for(int i = 0; i < n; i++) {
+
+        int pr;   // priority read (not used in SJF)
 
         pid[i] = i + 1;
         isCompleted[i] = 0;
 
-        printf("\nProcess %d\n", pid[i]);
-
-        // Arrival Time validation
-        do {
-            printf("Arrival Time (>=0): ");
-            scanf("%f", &at[i]);
-
-            if(at[i] < 0)
-                printf("Arrival time cannot be negative!\n");
-
-        } while(at[i] < 0);
-
-        // Burst Time validation
-        do {
-            printf("Burst Time (>0): ");
-            scanf("%f", &bt[i]);
-
-            if(bt[i] <= 0)
-                printf("Burst time must be greater than 0!\n");
-
-        } while(bt[i] <= 0);
+        fscanf(fp2,"%f %f %d",&at[i],&bt[i],&pr);
     }
+
+    int tq;   // time quantum read (not used in SJF)
+    fscanf(fp2,"%d",&tq);
+
+    fclose(fp2);
 
     float currentTime = 0;
     int completed = 0;
@@ -64,7 +50,6 @@ int main() {
         int index = -1;
         float minBT = INF;
 
-        // Find shortest job among arrived processes
         for(int i = 0; i < n; i++) {
 
             if(at[i] <= currentTime && isCompleted[i] == 0) {
@@ -74,7 +59,6 @@ int main() {
                     index = i;
                 }
 
-                // Tie-breaking rule
                 else if(bt[i] == minBT) {
                     if(at[i] < at[index])
                         index = i;
@@ -82,7 +66,6 @@ int main() {
             }
         }
 
-        // If process found
         if(index != -1) {
 
             float startTime = currentTime;
@@ -98,15 +81,12 @@ int main() {
             printf("Process P%d executed from %.2f to %.2f\n",
                    pid[index], startTime, ct[index]);
 
-            // Write to Gantt file
             fprintf(fp,"P%d %.2f %.2f\n", pid[index], startTime, bt[index]);
 
             totalWT += wt[index];
             totalTAT += tat[index];
         }
         else {
-
-            // CPU Idle Condition
 
             float nextArrival = INF;
 
@@ -120,7 +100,6 @@ int main() {
             printf("CPU Idle from %.2f to %.2f\n",
                    currentTime, nextArrival);
 
-            // Write idle to file
             fprintf(fp,"IDLE %.2f %.2f\n", currentTime, nextArrival-currentTime);
 
             currentTime = nextArrival;
@@ -141,14 +120,14 @@ int main() {
     printf("Average Waiting Time = %.2f\n", totalWT/n);
     printf("Average Turnaround Time = %.2f\n", totalTAT/n);
 
-    // save average waiting time for comparison
-      FILE *cmp;
+    FILE *cmp;
     cmp = fopen("comparison_data.txt","a");
     fprintf(cmp,"SJF %.2f\n", totalWT/n);
     fclose(cmp);
 
-
     fclose(fp);
+
     system("python visualize.py || python3 visualize.py");
+
     return 0;
 }
