@@ -7,7 +7,11 @@
 #define MAX 100
 #define EPS 0.00001
 
+FILE *fp;
+
 int main() {
+
+    fp = fopen("gantt_data.txt","w");
 
     int n;
 
@@ -48,6 +52,7 @@ int main() {
     }
 
     float csOverhead;
+
     do {
         printf("\nEnter Context Switch Overhead Time (>=0): ");
         scanf("%f", &csOverhead);
@@ -82,7 +87,7 @@ int main() {
             }
         }
 
-        // If no process available → Idle
+        // CPU Idle
         if(current == -1) {
 
             float nextArrival = FLT_MAX;
@@ -92,6 +97,9 @@ int main() {
                     nextArrival = at[i];
 
             printf("Idle (%.2f -> %.2f)\n", time, nextArrival);
+
+            fprintf(fp,"IDLE %.2f %.2f\n", time, nextArrival-time);
+
             time = nextArrival;
             continue;
         }
@@ -102,13 +110,16 @@ int main() {
             contextSwitch++;
 
             if(csOverhead > 0) {
+
                 printf("Context Switch (%.2f -> %.2f)\n",
                        time, time + csOverhead);
+
+                fprintf(fp,"CS %.2f %.2f\n", time, csOverhead);
+
                 time += csOverhead;
             }
         }
 
-        // Find next arrival
         float nextArrival = FLT_MAX;
 
         for(int i = 0; i < n; i++)
@@ -125,6 +136,9 @@ int main() {
         printf("P%d (%.2f -> %.2f)\n",
                pid[current], time, time + executeTime);
 
+        fprintf(fp,"P%d %.2f %.2f\n",
+                pid[current], time, executeTime);
+
         rt[current] -= executeTime;
         time += executeTime;
 
@@ -138,8 +152,7 @@ int main() {
                 wt[current] = 0;
 
             completed++;
-        }#
-
+        }
 
         lastProcess = current;
     }
@@ -161,6 +174,8 @@ int main() {
     printf("\nAverage Waiting Time: %.2f\n", totalWT/n);
     printf("Average Turnaround Time: %.2f\n", totalTAT/n);
     printf("Total Context Switches: %d\n", contextSwitch);
+
+    fclose(fp);
 
     return 0;
 }

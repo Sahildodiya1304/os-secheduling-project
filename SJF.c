@@ -3,7 +3,11 @@
 #define MAX 100
 #define INF 999999
 
+FILE *fp;
+
 int main() {
+
+    fp = fopen("gantt_data.txt","w");
 
     int n;
 
@@ -94,11 +98,15 @@ int main() {
             printf("Process P%d executed from %.2f to %.2f\n",
                    pid[index], startTime, ct[index]);
 
+            // Write to Gantt file
+            fprintf(fp,"P%d %.2f %.2f\n", pid[index], startTime, bt[index]);
+
             totalWT += wt[index];
             totalTAT += tat[index];
         }
         else {
-            // CPU Idle Condition (Professional Handling)
+
+            // CPU Idle Condition
 
             float nextArrival = INF;
 
@@ -111,6 +119,9 @@ int main() {
 
             printf("CPU Idle from %.2f to %.2f\n",
                    currentTime, nextArrival);
+
+            // Write idle to file
+            fprintf(fp,"IDLE %.2f %.2f\n", currentTime, nextArrival-currentTime);
 
             currentTime = nextArrival;
         }
@@ -129,6 +140,8 @@ int main() {
     printf("--------------------------------------------------------------\n");
     printf("Average Waiting Time = %.2f\n", totalWT/n);
     printf("Average Turnaround Time = %.2f\n", totalTAT/n);
+
+    fclose(fp);
 
     return 0;
 }

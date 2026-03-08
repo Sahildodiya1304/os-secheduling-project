@@ -6,7 +6,11 @@
 #define MAX 100
 #define EPS 0.00001
 
+FILE *fp;
+
 int main() {
+
+    fp = fopen("gantt_data.txt","w");
 
     int n;
 
@@ -70,7 +74,6 @@ int main() {
                 }
             }
         }
-#
 
         // If no process available → Idle
         if(current == -1) {
@@ -82,6 +85,9 @@ int main() {
                     nextArrival = at[i];
 
             printf("Idle (%.2f -> %.2f)\n", time, nextArrival);
+
+            fprintf(fp,"IDLE %.2f %.2f\n", time, nextArrival - time);
+
             time = nextArrival;
             continue;
         }
@@ -105,6 +111,8 @@ int main() {
 
         printf("P%d (%.2f -> %.2f)\n",
                pid[current], time, time + executeTime);
+
+        fprintf(fp,"P%d %.2f %.2f\n", pid[current], time, executeTime);
 
         rt[current] -= executeTime;
         time += executeTime;
@@ -140,6 +148,8 @@ int main() {
     printf("\nAverage Waiting Time: %.2f\n", totalWT/n);
     printf("Average Turnaround Time: %.2f\n", totalTAT/n);
     printf("Total Context Switches: %d\n", contextSwitch);
+
+    fclose(fp);
 
     return 0;
 }
