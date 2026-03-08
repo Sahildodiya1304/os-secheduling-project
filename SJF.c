@@ -141,6 +141,13 @@ int main() {
     printf("Average Waiting Time = %.2f\n", totalWT/n);
     printf("Average Turnaround Time = %.2f\n", totalTAT/n);
 
+    // save average waiting time for comparison
+      FILE *cmp;
+    cmp = fopen("comparison_data.txt","a");
+    fprintf(cmp,"SJF %.2f\n", totalWT/n);
+    fclose(cmp);
+
+
     fclose(fp);
     system("python visualize.py || python3 visualize.py");
     return 0;

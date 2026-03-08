@@ -69,8 +69,8 @@ int main() {
     printf("\n===== FCFS Execution Log =====\n");
 
     for(int i = 0; i < n; i++) {
-
-        // CPU Idle Condition
+        // If CPU is idle before the next process arrives
+        
         if(currentTime < at[i]) {
 
             printf("CPU Idle from %.2f to %.2f\n", currentTime, at[i]);
@@ -109,7 +109,15 @@ int main() {
     printf("Average Waiting Time = %.2f\n", totalWT/n);
     printf("Average Turnaround Time = %.2f\n", totalTAT/n);
 
+    // Save comparison data
+    FILE *cmp;
+    cmp = fopen("comparison_data.txt","a");
+    fprintf(cmp,"FCFS %.2f\n", totalWT/n);
+    fclose(cmp);
+
     fclose(fp);
+
     system("python visualize.py || python3 visualize.py");
+
     return 0;
 }

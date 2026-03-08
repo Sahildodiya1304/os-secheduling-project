@@ -166,6 +166,15 @@ int main() {
     printf("Average Turnaround Time: %.2f\n", totalTAT/n);
     printf("Total Context Switches: %d\n", contextSwitch);
 
+    // save average waiting time for comparison
+    FILE *cmp;
+    cmp = fopen("comparison_data.txt","a");
+    fprintf(cmp,"RR %.2f\n", totalWT/n);
+    fclose(cmp);
+
+
+
+
     fclose(fp);
     system("python visualize.py || python3 visualize.py");
 
