@@ -2,6 +2,7 @@
 #include <float.h>
 #include <stdbool.h>
 #include <math.h>
+#include <stdlib.h>
 
 #define MAX 100
 #define EPS 0.00001
@@ -151,5 +152,6 @@ int main() {
 
     fclose(fp);
 
+    system("python visualize.py || python3 visualize.py");
     return 0;
 }

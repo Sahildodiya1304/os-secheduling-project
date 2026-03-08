@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <stdlib.h>
 #define MAX 100
 
 FILE *fp;
@@ -110,6 +110,6 @@ int main() {
     printf("Average Turnaround Time = %.2f\n", totalTAT/n);
 
     fclose(fp);
-
+    system("python visualize.py || python3 visualize.py");
     return 0;
 }

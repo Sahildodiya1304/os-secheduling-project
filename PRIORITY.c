@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <limits.h>
+#include <stdlib.h> 
 
 #define MAX 100
 #define EPS 0.00001
@@ -176,6 +177,7 @@ int main() {
     printf("Total Context Switches: %d\n", contextSwitch);
 
     fclose(fp);
+    system("python visualize.py || python3 visualize.py");
 
     return 0;
 }
