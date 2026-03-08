@@ -22,24 +22,24 @@ int main() {
         switch(choice) {
 
             case 1:
-                system("fcfs");
-                break;
+             system("fcfs || ./fcfs");
+            break;
 
-            case 2:
-                system("SJF");
-                break;
+             case 2:
+             system("sjf || ./sjf");
+            break;
 
-            case 3:
-                system("SRTF");
-                break;
+             case 3:
+            system("srtf || ./srtf");
+            break;
 
             case 4:
-                system("RR");
-                break;
+             system("rr || ./rr");
+            break;
 
-            case 5:
-                system("PRIORITY");
-                break;
+             case 5:
+            system("priority || ./priority");
+            break;
 
             case 6:
                 exit(0);
