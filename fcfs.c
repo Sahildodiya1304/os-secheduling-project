@@ -1,0 +1,115 @@
+#include <stdio.h>
+
+#define MAX 100
+
+FILE *fp;
+
+int main() {
+
+    fp = fopen("gantt_data.txt","w");
+
+    int n;
+
+    do {
+        printf("Enter number of processes (1-100): ");
+        scanf("%d", &n);
+
+        if(n <= 0 || n > MAX)
+            printf("Invalid! Enter value between 1 and 100.\n");
+
+    } while(n <= 0 || n > MAX);
+
+    int pid[MAX];
+    float at[MAX], bt[MAX], ct[MAX], tat[MAX], wt[MAX];
+
+    for(int i = 0; i < n; i++) {
+
+        pid[i] = i + 1;
+
+        printf("\nProcess %d\n", pid[i]);
+
+        do {
+            printf("Arrival Time (>=0): ");
+            scanf("%f", &at[i]);
+
+            if(at[i] < 0)
+                printf("Arrival time cannot be negative!\n");
+
+        } while(at[i] < 0);
+
+        do {
+            printf("Burst Time (>0): ");
+            scanf("%f", &bt[i]);
+
+            if(bt[i] <= 0)
+                printf("Burst time must be greater than 0!\n");
+
+        } while(bt[i] <= 0);
+    }
+
+    // Sort by Arrival Time
+    for(int i = 0; i < n - 1; i++) {
+        for(int j = i + 1; j < n; j++) {
+
+            if(at[i] > at[j]) {
+
+                float temp;
+
+                temp = at[i]; at[i] = at[j]; at[j] = temp;
+                temp = bt[i]; bt[i] = bt[j]; bt[j] = temp;
+
+                int t = pid[i]; pid[i] = pid[j]; pid[j] = t;
+            }
+        }
+    }
+
+    float currentTime = 0;
+    float totalWT = 0, totalTAT = 0;
+
+    printf("\n===== FCFS Execution Log =====\n");
+
+    for(int i = 0; i < n; i++) {
+
+        // CPU Idle Condition
+        if(currentTime < at[i]) {
+
+            printf("CPU Idle from %.2f to %.2f\n", currentTime, at[i]);
+            fprintf(fp,"IDLE %.2f %.2f\n", currentTime, at[i] - currentTime);
+
+            currentTime = at[i];
+        }
+
+        float startTime = currentTime;
+
+        ct[i] = currentTime + bt[i];
+        tat[i] = ct[i] - at[i];
+        wt[i] = tat[i] - bt[i];
+
+        currentTime = ct[i];
+
+        printf("Process P%d executed from %.2f to %.2f\n",
+               pid[i], startTime, ct[i]);
+
+        fprintf(fp,"P%d %.2f %.2f\n", pid[i], startTime, bt[i]);
+
+        totalWT += wt[i];
+        totalTAT += tat[i];
+    }
+
+    printf("\n-------------------------------------------\n");
+    printf("PID\tAT\tBT\tCT\tTAT\tWT\n");
+    printf("-------------------------------------------\n");
+
+    for(int i = 0; i < n; i++) {
+        printf("%d\t%.2f\t%.2f\t%.2f\t%.2f\t%.2f\n",
+               pid[i], at[i], bt[i], ct[i], tat[i], wt[i]);
+    }
+
+    printf("-------------------------------------------\n");
+    printf("Average Waiting Time = %.2f\n", totalWT/n);
+    printf("Average Turnaround Time = %.2f\n", totalTAT/n);
+
+    fclose(fp);
+
+    return 0;
+}
