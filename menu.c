@@ -5,65 +5,68 @@ int main() {
 
     int choice;
 
-    printf("\nCPU Scheduling Simulator\n");
-    printf("------------------------\n");
-    printf("1. Enter Process Data\n");
-    printf("2. FCFS\n");
-    printf("3. SJF\n");
-    printf("4. SRTF\n");
-    printf("5. Round Robin\n");
-    printf("6. Priority\n");
-    printf("7. Compare Algorithms\n");
-    printf("8. Exit\n");
+    while(1) {
 
-    printf("\nSelect Option: ");
-    scanf("%d", &choice);
+        printf("\nCPU Scheduling Simulator\n");
+        printf("------------------------\n");
+        printf("1. Enter Process Data\n");
+        printf("2. FCFS\n");
+        printf("3. SJF\n");
+        printf("4. SRTF\n");
+        printf("5. Round Robin\n");
+        printf("6. Priority\n");
+        printf("7. Compare Algorithms\n");
+        printf("8. Exit\n");
 
-    switch(choice) {
+        printf("\nSelect Option: ");
+        scanf("%d", &choice);
 
-        case 1:
-            system("input || ./input");
-            break;
+        switch(choice) {
 
-        case 2:
-            system("fcfs || ./fcfs");
-            break;
+            case 1:
+                system("input || ./input");
+                break;
 
-        case 3:
-            system("sjf || ./sjf");
-            break;
+            case 2:
+                system("fcfs || ./fcfs");
+                break;
 
-        case 4:
-            system("srtf || ./srtf");
-            break;
+            case 3:
+                system("sjf || ./sjf");
+                break;
 
-        case 5:
-            system("rr || ./rr");
-            break;
+            case 4:
+                system("srtf || ./srtf");
+                break;
 
-        case 6:
-            system("priority || ./priority");
-            break;
+            case 5:
+                system("rr || ./rr");
+                break;
 
-        case 7:
+            case 6:
+                system("priority || ./priority");
+                break;
 
-            fopen("comparison_data.txt","w");
+            case 7:
 
-            system("fcfs || ./fcfs");
-            system("sjf || ./sjf");
-            system("srtf || ./srtf");
-            system("rr || ./rr");
-            system("priority || ./priority");
+                fopen("comparison_data.txt","w");
 
-            system("python compare.py || python3 compare.py");
+                system("fcfs || ./fcfs");
+                system("sjf || ./sjf");
+                system("srtf || ./srtf");
+                system("rr || ./rr");
+                system("priority || ./priority");
 
-            break;
+                system("python compare.py || python3 compare.py");
 
-        case 8:
-            exit(0);
+                break;
 
-        default:
-            printf("Invalid choice\n");
+            case 8:
+                exit(0);
+
+            default:
+                printf("Invalid choice\n");
+        }
     }
 
     return 0;
