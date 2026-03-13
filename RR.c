@@ -143,7 +143,7 @@ int main() {
 
     fclose(fp);
 
-    system("python visualize.py || python3 visualize.py");
+    system("python visualize.py RR");
 
     return 0;
 }
