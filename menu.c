@@ -14,9 +14,10 @@ int main() {
         printf("3. SJF\n");
         printf("4. SRTF\n");
         printf("5. Round Robin\n");
-        printf("6. Priority\n");
-        printf("7. Compare Algorithms\n");
-        printf("8. Exit\n");
+        printf("6. Priority (Preemptive)\n");
+        printf("7. Priority (Non-Preemptive)\n");
+        printf("8. Compare Algorithms\n");
+        printf("9. Exit\n");
 
         printf("\nSelect Option: ");
         scanf("%d", &choice);
@@ -24,44 +25,54 @@ int main() {
         switch(choice) {
 
             case 1:
-                system("input || ./input");
+                system("input ||");
                 break;
 
             case 2:
-                system("fcfs || ./fcfs");
+                system("fcfs ||");
                 break;
 
             case 3:
-                system("sjf || ./sjf");
+                system("sjf ||");
                 break;
 
             case 4:
-                system("srtf || ./srtf");
+                system("srtf ||");
                 break;
 
             case 5:
-                system("rr || ./rr");
+                system("rr ||");
                 break;
 
             case 6:
-                system("priority || ./priority");
+                system("priority ||");
                 break;
 
             case 7:
-
-                fopen("comparison_data.txt","w");
-
-                system("fcfs || ./fcfs");
-                system("sjf || ./sjf");
-                system("srtf || ./srtf");
-                system("rr || ./rr");
-                system("priority || ./priority");
-
-                system("python compare.py || python3 compare.py");
-
+                system("priority_np ||");
                 break;
 
-            case 8:
+            case 8: {
+
+                FILE *fp = fopen("comparison_data.txt","w");
+                if(fp != NULL)
+                    fclose(fp);
+
+                system("fcfs ||");
+                system("sjf ||");
+                system("srtf ||");
+                system("rr ||");
+                system("priority_p ||");
+                system("priority ||");
+                system("priority_np ||");
+                
+
+                system("python compare.py || ");
+
+                break;
+            }
+
+            case 9:
                 exit(0);
 
             default:

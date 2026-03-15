@@ -8,7 +8,10 @@ int main() {
     FILE *fp;
     int n;
     float at, bt;
-    int pr, tq;
+    int pr;
+    float tq;   // changed from int to float
+
+    int priorities[MAX];   // store priorities to check duplicate
 
     fp = fopen("process_data.txt","w");
 
@@ -53,23 +56,41 @@ int main() {
 
         }while(bt <= 0);
 
-        printf("Priority (smaller number = higher priority): ");
-        scanf("%d",&pr);
+        // Priority validation (no duplicate allowed)
+        int duplicate;
+
+        do{
+            duplicate = 0;
+
+            printf("Priority (smaller number = higher priority): ");
+            scanf("%d",&pr);
+
+            for(int j=0;j<i;j++){
+                if(priorities[j] == pr){
+                    printf("Priority already used! Enter different priority.\n");
+                    duplicate = 1;
+                    break;
+                }
+            }
+
+        }while(duplicate);
+
+        priorities[i] = pr;
 
         fprintf(fp,"%f %f %d\n",at,bt,pr);
     }
 
-    // Time Quantum validation
+    // Time Quantum validation (decimal allowed)
     do{
         printf("\nEnter Time Quantum for Round Robin (>0): ");
-        scanf("%d",&tq);
+        scanf("%f",&tq);
 
         if(tq <= 0)
             printf("Time Quantum must be greater than 0!\n");
 
     }while(tq <= 0);
 
-    fprintf(fp,"%d\n",tq);
+    fprintf(fp,"%f\n",tq);
 
     fclose(fp);
 
